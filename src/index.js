@@ -2,17 +2,19 @@ import '~/config/ReactotronConfig';
 
 import React, { Fragment } from 'react';
 import { Provider } from 'react-redux';
+import { Toast } from 'react-native-redux-toast';
+
+import './config/StatusBarConfig';
+
 import Routes from '~/routes';
 
 import store from '~/store';
-
-import GlobalStyle from '~/styles/global';
 
 const App = () => (
   <Provider store={store}>
     <Fragment>
       <Routes />
-      <GlobalStyle />
+      <Toast />
     </Fragment>
   </Provider>
 );
