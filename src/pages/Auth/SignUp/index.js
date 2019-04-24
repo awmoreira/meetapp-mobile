@@ -8,10 +8,21 @@ import {
 
 import LogoIcon from '~/assets/logo.png';
 
-const SignIn = () => (
+const SignUp = () => (
   <KeyboardAvoidingView befhavior={Platform.OS === 'ios' ? 'padding' : null} style={{ flex: 1 }}>
     <Container>
       <LogoImage source={LogoIcon} />
+
+      <Label>Nome</Label>
+      <Input
+        autoCapitalize="none"
+        autoCorrect={false}
+        underlineColorAndroid="transparent"
+        autofocus
+        returnKeyType="next"
+        placeholder="Digite seu nome"
+        placeholderTextColor="grey"
+      />
 
       <Label>Email</Label>
       <Input
@@ -37,14 +48,14 @@ const SignIn = () => (
       />
 
       <Button onPress={() => {}}>
-        <TextButton>Entrar</TextButton>
+        <TextButton>Criar conta</TextButton>
       </Button>
 
       <TouchableOpacity onPress={() => {}}>
-        <TextCriar>Criar conta grátis</TextCriar>
+        <TextCriar>Já tenho conta</TextCriar>
       </TouchableOpacity>
     </Container>
   </KeyboardAvoidingView>
 );
 
-export default SignIn;
+export default SignUp;

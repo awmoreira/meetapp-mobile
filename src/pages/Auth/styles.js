@@ -2,9 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  height: 100%;
   background: #1d2331;
-  display: flex;
   justify-content: center;
   align-items: stretch;
   padding: 30px;
@@ -19,7 +17,7 @@ export const LogoImage = styled.Image`
 
 export const Label = styled.Text`
   color: #ffffff;
-  font-family: Helvetica, sans-serif;
+  /* font-family: Helvetica, sans-serif; */
   font-size: 16px;
   line-height: 18px;
   font-weight: bold;
@@ -31,32 +29,42 @@ export const Input = styled.TextInput`
   padding: 0px;
   border-radius: 3px;
   border: 0;
-  background-color: #1d2331;
+  background-color: transparent;
   color: #f6f6f6;
+  opacity: 0.5;
   margin-top: 8px;
-  transition: border 0.15s ease;
-  font-size: 16px;
+  font-size: 20px;
 
   &:focus {
+    border-width: 1;
     border-color: #e5556e;
   }
 `;
 
-// button {
-//   margin: 20px 0 0;
-//   border-radius: 25px;
-//   font-size: 16px;
-// }
-// a {
-//   text-decoration: none;
+export const Button = styled.TouchableOpacity`
+  height: 44px;
+  border-radius: 30px;
+  background: #e5556e;
+  border: 0;
+  font-size: 16px;
+  padding: 0 10px;
+  /* text-transform: uppercase; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+`;
 
-//   h1 {
-//     text-align: center;
-//     font-family: Helvetica, sans-serif;
-//     font-size: 16px;
-//     font-weight: 100;
-//     opacity: 0.6;
-//     color: #fff;
-//     margin-top: 18px;
-//   }
-// }
+export const TextButton = styled.Text`
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+`;
+
+export const TextCriar = styled.Text`
+  font-size: 16px;
+  color: #f6f6f6;
+  opacity: 0.6;
+  margin-top: 20px;
+  text-align: center;
+`;
