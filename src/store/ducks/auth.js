@@ -6,6 +6,7 @@ import Immutable from 'seamless-immutable';
 const { Types, Creators } = createActions({
   signInRequest: ['email', 'password'],
   signInSuccess: ['token'],
+  authCheck: null,
   signOut: null,
   signUpRequest: ['username', 'email', 'password', 'password_confirmation'],
   updateUserRequest: ['username', 'password', 'password_confirmation', 'preference'],
@@ -19,18 +20,20 @@ export default Creators;
 /* Initial State */
 
 export const INITIAL_STATE = Immutable({
-  signedIn: false,
-  // signedIn: !!localStorage.getItem('@Meetapp:token'),
+  isAuthChecked: false,
+  isSigningIn: false,
+  isSignedIn: false,
   token: null,
-  // token: localStorage.getItem('@Meetapp:token') || null,
   user: null,
 });
 
 /* Reducers */
 
-export const success = (state, { token }) => state.merge({ signedIn: true, token });
+export const success = (state, { token }) => state.merge({ isSignedIn: true, token });
 
-export const logout = state => state.merge({ signedIn: false, token: null });
+export const authCheck = state => state.merge({ isAuthChecked: true });
+
+export const logout = state => state.merge({ isSignedIn: false, token: null });
 
 export const getSuccess = (state, { user }) => state.merge({ user });
 
@@ -39,5 +42,6 @@ export const getSuccess = (state, { user }) => state.merge({ user });
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.SIGN_IN_SUCCESS]: success,
   [Types.SIGN_OUT]: logout,
+  [Types.AUTH_CHECK]: authCheck,
   [Types.GET_USER_SUCCESS]: getSuccess,
 });

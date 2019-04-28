@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import {
+  StatusBar, KeyboardAvoidingView, Platform, TouchableOpacity,
+} from 'react-native';
 
 import {
   Container, LogoImage, Label, Input, Button, TextButton, TextCriar,
@@ -11,6 +13,7 @@ import LogoIcon from '~/assets/logo.png';
 const SignUp = () => (
   <KeyboardAvoidingView befhavior={Platform.OS === 'ios' ? 'padding' : null} style={{ flex: 1 }}>
     <Container>
+      <StatusBar backgroundColor="#1d2331" barStyle="light-content" />
       <LogoImage source={LogoIcon} />
 
       <Label>Nome</Label>

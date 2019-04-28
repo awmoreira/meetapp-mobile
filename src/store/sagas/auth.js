@@ -1,37 +1,39 @@
 import { call, put } from 'redux-saga/effects';
-// import { push } from 'connected-react-router';
-// import { actions as toastrActions } from 'react-redux-toastr';
-import api from '../../services/api';
+import AsyncStorage from '@react-native-community/async-storage';
+import { ToastActionsCreators } from 'react-native-redux-toast';
+import api from '~/services/api';
+import navigation from '~/services/navigation';
 
 import AuthActions from '../ducks/auth';
 
+export function* initAuthCheck() {
+  const token = yield call([AsyncStorage, 'getItem'], '@Meetapp:token');
+
+  if (token) {
+    yield put(AuthActions.signInSuccess(token));
+  }
+
+  yield put(AuthActions.authCheck());
+}
+
 export function* signIn({ email, password }) {
   try {
-    const response = yield call(api.post, 'sessions', { email, password });
+    const { data } = yield call(api.post, 'sessions', { email, password });
 
-    // localStorage.setItem('@Meetapp:token', response.data.token);
+    yield call([AsyncStorage, 'setItem'], '@Meetapp:token', data.token);
 
-    yield put(AuthActions.signInSuccess(response.data.token));
+    yield put(AuthActions.signInSuccess(data.token));
 
-    if (response.data.preference) {
-      // yield put(push('/'));
-    } else {
-      // yield put(push('/preferences'));
-    }
+    const navigateTo = data.preference ? 'Dashboard' : 'Preferences';
+    navigation.navigate(navigateTo);
   } catch (err) {
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'error',
-    //     title: 'Falha no login',
-    //     message: 'Verifique seu e-mail/senha!',
-    //   }),
-    // );
+    yield put(ToastActionsCreators.displayError('Verifique seu Email e/ou senha'));
   }
 }
 
 export function* signOut() {
-  // localStorage.removeItem('@Meetup:token');
-  // yield put(push('/signin'));
+  // yield call([AsyncStorage, 'removeItem'], '@Meetapp:token');
+  // navigation.navigate('SignIn');
 }
 
 export function* signUp({
@@ -45,22 +47,11 @@ export function* signUp({
       password_confirmation,
     });
 
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'success',
-    //     title: 'SignUp',
-    //     message: 'Cadastro realizado! Por favor faça seu login.',
-    //   }),
-    // );
-    // yield put(push('/'));
+    yield put(ToastActionsCreators.displayInfo('Verifique seu Email e/ou senha'));
+
+    navigation.navigate('SignIn');
   } catch (err) {
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'error',
-    //     title: 'Falha no cadastro',
-    //     message: 'Tente novamente mais tarde...',
-    //   }),
-    // );
+    yield put(ToastActionsCreators.displayError('Falha na operação. Tente novamente mais tarde.'));
   }
 }
 
@@ -82,22 +73,10 @@ export function* updateUser({
       });
     }
 
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'success',
-    //     title: 'Perfil',
-    //     message: 'Atualização realizada com sucesso!',
-    //   }),
-    // );
-    // yield put(push('/'));
+    yield put(ToastActionsCreators.displayInfo('Usuário atualizado.'));
+    navigation.navigate('Dashboard');
   } catch (err) {
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'error',
-    //     title: 'Falha na atualização',
-    //     message: 'Tente novamente mais tarde...',
-    //   }),
-    // );
+    yield put(ToastActionsCreators.displayError('Falha na operação. Tente novamente mais tarde.'));
   }
 }
 

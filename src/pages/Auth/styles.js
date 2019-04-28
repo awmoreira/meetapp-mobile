@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+export const Keyboard = styled.KeyboardAvoidingView`
+  flex: 1;
+`;
+
 export const Container = styled.View`
   flex: 1;
   background: #1d2331;
