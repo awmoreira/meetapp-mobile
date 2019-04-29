@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import styled from 'styled-components/native';
+
 import createNavigator from '~/routes';
 import navigation from '~/services/navigation';
 
-import { View, Text } from 'react-native';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
-import './config/StatusBarConfig';
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #1d2331;
+`;
+
+const Status = styled.StatusBar``;
 
 class App extends Component {
   static propTypes = {
@@ -26,9 +35,16 @@ class App extends Component {
 
     if (!auth.isAuthChecked) {
       return (
-        <View>
-          <Text>Loading...</Text>
-        </View>
+        <Container>
+          <Status backgroundColor="#1d2331" barStyle="light-content" />
+          <OrientationLoadingOverlay
+            visible
+            color="white"
+            indicatorSize="large"
+            messageFontSize={24}
+            message="Loading..."
+          />
+        </Container>
       );
     }
 

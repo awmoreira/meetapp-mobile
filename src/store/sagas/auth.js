@@ -1,8 +1,8 @@
 import { call, put } from 'redux-saga/effects';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ToastActionsCreators } from 'react-native-redux-toast';
-import api from '~/services/api';
 import navigation from '~/services/navigation';
+import api from '~/services/api';
 
 import AuthActions from '../ducks/auth';
 
@@ -47,7 +47,7 @@ export function* signUp({
       password_confirmation,
     });
 
-    yield put(ToastActionsCreators.displayInfo('Verifique seu Email e/ou senha'));
+    yield put(ToastActionsCreators.displayInfo('Cadastro realizado.'));
 
     navigation.navigate('SignIn');
   } catch (err) {

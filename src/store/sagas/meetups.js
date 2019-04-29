@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
-// import { actions as toastrActions } from 'react-redux-toastr';
-// import { push } from 'connected-react-router';
-import api from '../../services/api';
+import { ToastActionsCreators } from 'react-native-redux-toast';
+import navigation from '~/services/navigation';
+import api from '~/services/api';
 
 import MeetupsActions from '../ducks/meetups';
 
@@ -43,21 +43,11 @@ export function* addMeetup({
     });
 
     yield put(MeetupsActions.addMeetupSuccess(response.data));
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'success',
-    //     title: 'Meetup',
-    //     message: 'Criado com sucesso.',
-    //   }),
-    // );
-    // yield put(push('/'));
+
+    yield put(ToastActionsCreators.displayInfo('Meetup adicionado.'));
+
+    navigation.navigate('Dashboard');
   } catch (err) {
-    // yield put(
-    //   toastrActions.add({
-    //     type: 'error',
-    //     title: 'Falha ao criar meetup',
-    //     message: 'Por favor tente novamente mais tarde.',
-    //   }),
-    // );
+    yield put(ToastActionsCreators.displayError('Falha na operação. Tente mais tarde.'));
   }
 }

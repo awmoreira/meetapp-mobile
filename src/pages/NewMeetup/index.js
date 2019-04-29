@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { uniqueId } from 'lodash';
-import filesize from 'filesize';
+import ImagePicker from '~/components/ImagePicker';
+
+import {
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Switch,
+  // ActivityIndicator,
+} from 'react-native';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import api from '../../services/api';
-import MeetupsActions from '../../store/ducks/meetups';
+import MeetupsActions from '~/store/ducks/meetups';
 
-import { Container } from './styles';
+import {
+  Container,
+  Content,
+  Box,
+  Label,
+  SwitchContainer,
+  SwitchText,
+  TitleName,
+  Input,
+  Button,
+  TextButton,
+} from './styles';
+
+import Header from '~/components/Header';
 
 class NewMeetup extends Component {
   static propTypes = {
@@ -30,81 +49,6 @@ class NewMeetup extends Component {
     devops: false,
     manager: false,
     marketing: false,
-  };
-
-  handleDelete = async (id) => {
-    await api.delete(`files/${id}`);
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.filter(file => file.id !== id),
-    });
-  };
-
-  updateFile = (id, data) => {
-    const { uploadedFiles } = this.state;
-    this.setState({
-      uploadedFiles: uploadedFiles.map(uploadedFile => (id === uploadedFile.id ? { ...uploadedFile, ...data } : uploadedFile)),
-    });
-  };
-
-  handleUpload = (files) => {
-    const uploadedFiles = files.map(file => ({
-      file,
-      id: uniqueId(),
-      name: file.name,
-      readableSize: filesize(file.size),
-      preview: URL.createObjectURL(file),
-      progress: 0,
-      uploaded: false,
-      error: false,
-      url: null,
-    }));
-
-    this.setState({
-      uploadedFiles: this.state.uploadedFiles.concat(uploadedFiles),
-    });
-
-    uploadedFiles.forEach(this.processUpload);
-  };
-
-  processUpload = (uploadedFile) => {
-    const data = new FormData();
-    data.append('file', uploadedFile.file, uploadedFile.name);
-
-    api
-      .post('files', data, {
-        onUploadProgress: (e) => {
-          const progress = parseInt(Math.round((e.loaded * 100) / e.total));
-
-          this.updateFile(uploadedFile.id, {
-            progress,
-          });
-        },
-      })
-      .then((response) => {
-        this.updateFile(uploadedFile.id, {
-          uploaded: true,
-          id: response.data.id,
-          url: response.data.url,
-        });
-        this.setState({
-          file_id: response.data.id,
-        });
-      })
-      .catch(() => {
-        this.updateFile(uploadedFile.id, {
-          error: true,
-        });
-      });
-  };
-
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  handleCheckboxChange = (e) => {
-    this.setState({ [e.target.name]: e.target.checked });
   };
 
   handleSubmit = (e) => {
@@ -157,148 +101,185 @@ class NewMeetup extends Component {
 
     return (
       <Container>
-        <ScrollView>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
-            <Header title="Novo Meetup" />
-            <View style={styles.content}>
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Título</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCorrect={false}
-                  underlineColorAndroid="transparent"
-                  placeholder="Digite o título do evento"
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  onChangeText={handleChange('title')}
-                  onBlur={handleBlur('title')}
-                  value={values.title}
-                  returnKeyType="next"
-                  onSubmitEditing={() => this.descriptionInput.focus()}
-                />
-                {!!errors.title && <Text style={styles.error}>{errors.title}</Text>}
-              </View>
+        <Header title="Novo meetup" />
+        <Content>
+          <ScrollView>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
+              <TitleName>Título</TitleName>
+              <Input
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                placeholder="Digite o título do evento"
+                placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                onChangeText={title => this.setState({ title })}
+                value={title}
+                returnKeyType="next"
+                onSubmitEditing={() => this.descriptionInput.focus()}
+              />
 
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Descrição</Text>
-                <TextInput
-                  style={[styles.input, styles.textarea]}
-                  autoCorrect={false}
-                  underlineColorAndroid="transparent"
-                  placeholder="Fale um pouco sobre o evento"
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  multiline
-                  numberOfLines={4}
-                  onChangeText={handleChange('description')}
-                  onBlur={handleBlur('description')}
-                  value={values.description}
-                  returnKeyType="done"
-                  blurOnSubmit
-                  ref={(el) => {
-                    this.descriptionInput = el;
-                  }}
-                  onSubmitEditing={() => this.addressInput.focus()}
-                />
-                {!!errors.description && <Text style={styles.error}>{errors.description}</Text>}
-              </View>
+              <TitleName>Descrição</TitleName>
+              <Input
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                placeholder="Descreva seu meetup"
+                placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                multiline
+                numberOfLines={4}
+                onChangeText={description => this.setState({ description })}
+                value={description}
+                returnKeyType="done"
+                blurOnSubmit
+                ref={(el) => {
+                  this.descriptionInput = el;
+                }}
+                onSubmitEditing={() => this.addressInput.focus()}
+              />
 
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Imagem</Text>
-                <ImagePicker name="file" setFieldValue={setFieldValue} />
-                {!!errors.file && <Text style={styles.error}>{errors.file}</Text>}
-              </View>
+              <TitleName>Imagem</TitleName>
+              <ImagePicker name="file" setFieldValue={uploadedFiles} />
 
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Local do evento</Text>
-                <TextInput
-                  style={styles.input}
-                  autoCorrect={false}
-                  underlineColorAndroid="transparent"
-                  placeholder="Digite o local do evento"
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  onChangeText={handleChange('address')}
-                  onBlur={handleBlur('address')}
-                  value={values.address}
-                  returnKeyType="next"
-                  ref={(el) => {
-                    this.addressInput = el;
-                  }}
-                  onSubmitEditing={() => this.dateInput.getElement().focus()}
-                />
-                {!!errors.address && <Text style={styles.error}>{errors.address}</Text>}
-              </View>
+              <TitleName>Localização</TitleName>
+              <Input
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                placeholder="Onde seu meetup irá acontecer?"
+                placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                onChangeText={locale => this.setState({ locale })}
+                value={locale}
+                returnKeyType="next"
+                ref={(el) => {
+                  this.addressInput = el;
+                }}
+                onSubmitEditing={() => this.dateInput.focus()}
+              />
 
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Data/horário do evento</Text>
+              <TitleName>Data/horário</TitleName>
+              <Input
+                type="datetime"
+                options={{
+                  format: 'DD/MM/YYYY HH:mm',
+                }}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                placeholder="Digite a data e horário do evento"
+                placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                onChangeText={date_event => this.setState({ date_event })}
+                value={date_event}
+                returnKeyType="done"
+                ref={(el) => {
+                  this.dateInput = el;
+                }}
+              />
 
-                <TextInputMask
-                  type="datetime"
-                  options={{
-                    format: 'DD/MM/YYYY HH:mm',
-                  }}
-                  style={styles.input}
-                  autoCorrect={false}
-                  underlineColorAndroid="transparent"
-                  placeholder="Digite a data e horário do evento"
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  onChangeText={handleChange('date')}
-                  onBlur={handleBlur('date')}
-                  value={values.date}
-                  returnKeyType="done"
-                  ref={(el) => {
-                    this.dateInput = el;
-                  }}
-                />
-                {!!errors.date && <Text style={styles.error}>{errors.date}</Text>}
-              </View>
+              <Box>
+                <Label>Preferências</Label>
 
-              <View style={styles.inputWrap}>
-                <Text style={styles.label}>Preferencias</Text>
-                {themes.map(theme => (
-                  <View key={theme.id} style={styles.switchContainer}>
-                    <Text style={styles.switchText}>{theme.name}</Text>
-                    <Switch
-                      onValueChange={() => {
-                        if (values.themes.includes(theme.id)) {
-                          const nextValue = values.themes.filter(value => value !== theme.id);
-                          setFieldValue('themes', nextValue);
-                        } else {
-                          const nextValue = values.themes.concat(theme.id);
-                          setFieldValue('themes', nextValue);
-                        }
-                      }}
-                      trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
-                      thumbColor={
-                        values.themes.includes(theme.id) ? '#e5556e' : 'rgba(255, 255, 255, 0.5)'
-                      }
-                      value={values.themes.includes(theme.id)}
-                      hitSlop={{
-                        top: 0,
-                        bottom: 0,
-                        left: 10,
-                        right: 10,
-                      }}
-                    />
-                  </View>
-                ))}
-                {!!errors.themes && <Text style={styles.error}>{errors.themes}</Text>}
-              </View>
+                <SwitchContainer>
+                  <SwitchText>Front-end</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ front: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={front}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
 
-              <Touchable activeOpacity={0.65} style={styles.button} onPress={handleSubmit}>
-                {!meetups.isSaving ? (
-                  <Text style={styles.buttonText}>Salvar</Text>
-                ) : (
-                  <ActivityIndicator size="small" color="#fff" />
-                )}
-              </Touchable>
-            </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
+                <SwitchContainer>
+                  <SwitchText>Back-end</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ back: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={back}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
+
+                <SwitchContainer>
+                  <SwitchText>Mobile</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ mobile: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={mobile}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
+
+                <SwitchContainer>
+                  <SwitchText>Devops</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ devops: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={devops}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
+
+                <SwitchContainer>
+                  <SwitchText>Manager</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ manager: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={manager}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
+
+                <SwitchContainer>
+                  <SwitchText>Marketing</SwitchText>
+                  <Switch
+                    onValueChange={value => this.setState({ marketing: value })}
+                    trackColor={{ false: 'rgba(0, 0, 0, 0.3)', true: 'rgba(229, 85, 110, 0.8)' }}
+                    value={marketing}
+                    hitSlop={{
+                      top: 0,
+                      bottom: 0,
+                      left: 10,
+                      right: 10,
+                    }}
+                  />
+                </SwitchContainer>
+              </Box>
+
+              <Button activeOpacity={0.65} onPress={this.handleSubmit}>
+                <TextButton>Salvar</TextButton>
+              </Button>
+            </KeyboardAvoidingView>
+          </ScrollView>
+        </Content>
       </Container>
     );
   }
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators(MeetupsActions, dispatch);
+
+// const FILE_SIZE = 2097152; // mb
+// const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
 export default connect(
   null,

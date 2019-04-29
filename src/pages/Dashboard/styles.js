@@ -38,6 +38,7 @@ export const Meetup = styled.View`
   margin-bottom: 20px;
   border: 0;
   border-radius: 5px;
+  box-shadow: 0 0 10px #ccc;
 `;
 export const ImageMeetup = styled.Image`
   height: 146px;
@@ -87,7 +88,7 @@ export const DetailsMeetup = styled.TouchableOpacity`
 export const Message = styled.View`
   padding: 10px;
   background-color: #d9edf7;
-  /* box-shadow: 0 25px 10px -15px rgba(0, 0, 0, 0.5); */
+  box-shadow: 0 0 10px #ccc;
   border-radius: 5px;
   border-color: #bce8f1;
 `;

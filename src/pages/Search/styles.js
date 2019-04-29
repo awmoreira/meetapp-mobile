@@ -1,41 +1,45 @@
 import styled from 'styled-components/native';
-
-import SearchIcon from '~/assets/search.png';
+import { Dimensions } from 'react-native';
 
 export const Container = styled.View`
-  display: flex;
+  flex: 1;
+  background: #1d2331;
+`;
+
+export const Content = styled.View`
+  flex: 1;
   flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
+  justify-content: center;
+  align-items: stretch;
+  padding-top: 20px;
 `;
 
 export const SearchInput = styled.View`
-  display: flex;
+  flex-direction: row;
   align-items: center;
   border-radius: 5px;
-  height: 40px;
-  width: 100%;
-  padding: 6px 7px 6px 26px;
+  height: 45px;
+  width: ${Dimensions.get('window').width - 50}px;
+  padding: 6px 7px 6px 10px;
   margin-bottom: 20px;
-  background: #b9bbbe url(${SearchIcon}) no-repeat 7px center;
+  background: #b9bbbe;
 `;
 
 export const Input = styled.TextInput`
   flex: 1;
-  font-family: Helvetica;
   font-size: 15px;
   color: #8e8e93;
   border: 0;
-  background: #b9bbbe;
+  background-color: #b9bbbe;
+  padding: 3px 5px;
 `;
 
 export const Box = styled.View`
-  display: flex;
   flex-direction: column;
   align-items: stretch;
   margin-bottom: 20px;
   width: 100%;
-  max-width: 930px;
+  padding-left: 20px;
 `;
 
 export const Label = styled.Text`
@@ -47,8 +51,7 @@ export const Label = styled.Text`
 `;
 
 export const MeetupsList = styled.FlatList`
-  display: flex;
-  list-style-type: none;
+  /* flex-direction: row; */
 `;
 
 export const Meetup = styled.View`
@@ -66,14 +69,13 @@ export const ImageMeetup = styled.Image`
 `;
 
 export const InfoBox = styled.View`
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 5px 10px;
 `;
 
 export const Info = styled.View`
-  display: flex;
   flex-direction: column;
   align-items: stretch;
 `;
@@ -91,31 +93,28 @@ export const Number = styled.Text`
 `;
 
 export const DetailsMeetup = styled.TouchableOpacity`
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
 
   width: 44px;
   height: 44px;
   margin-left: 40px;
   background-color: #e5556e;
   border: 0;
-  border-radius: 50%;
+  border-radius: 30px;
   color: #fff;
 `;
 
 export const Message = styled.View`
   padding: 10px;
   background-color: #d9edf7;
-  box-shadow: 0 25px 10px -15px rgba(0, 0, 0, 0.05);
   border-radius: 5px;
   border-color: #bce8f1;
 `;
 
 export const MessageText = styled.Text`
   color: #31708f;
-  font-family: Helvetica, sans-serif;
   font-size: 16px;
   font-weight: 400;
 `;

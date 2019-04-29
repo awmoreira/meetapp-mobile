@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withNavigationFocus } from 'react-navigation';
+
+import { ScrollView } from 'react-native';
 
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MeetupsActions from '../../store/ducks/meetups';
 
+import Header from '~/components/Header';
+
 import {
   Container,
+  Content,
   SearchInput,
   Input,
   Box,
@@ -34,7 +40,7 @@ class Search extends Component {
         id: PropTypes.number,
         title: PropTypes.string,
         __meta__: PropTypes.shape({
-          subscriptions_count: PropTypes.number,
+          subscriptions_count: PropTypes.string,
         }),
       }),
     ).isRequired,
@@ -43,7 +49,7 @@ class Search extends Component {
         id: PropTypes.number,
         title: PropTypes.string,
         __meta__: PropTypes.shape({
-          subscriptions_count: PropTypes.number,
+          subscriptions_count: PropTypes.string,
         }),
       }),
     ).isRequired,
@@ -52,7 +58,7 @@ class Search extends Component {
         id: PropTypes.number,
         title: PropTypes.string,
         __meta__: PropTypes.shape({
-          subscriptions_count: PropTypes.number,
+          subscriptions_count: PropTypes.string,
         }),
       }),
     ).isRequired,
@@ -68,12 +74,12 @@ class Search extends Component {
     this.searchInput.focus();
   }
 
-  handleInputSearch = (e) => {
+  handleInputSearch = (term) => {
     const { getSubscriptionsRequest, getNextsRequest, getRecommendedRequest } = this.props;
 
-    getSubscriptionsRequest(e.target.value);
-    getNextsRequest(e.target.value);
-    getRecommendedRequest(e.target.value);
+    getSubscriptionsRequest(term);
+    getNextsRequest(term);
+    getRecommendedRequest(term);
   };
 
   render() {
@@ -81,114 +87,136 @@ class Search extends Component {
 
     return (
       <Container>
-        <Box>
-          <SearchInput>
-            <Input
-              ref={(input) => {
-                this.searchInput = input;
-              }}
-              type="text"
-              onChange={this.handleInputSearch}
-              placeholder="Buscar meetups"
-            />
-          </SearchInput>
-          <Label>Inscrições</Label>
-          {subscriptions.length === 0 && (
-            <Message>
-              <MessageText>Nenhuma inscrição realizada.</MessageText>
-            </Message>
-          )}
-          <MeetupsList>
-            {subscriptions
-              && subscriptions.map(meetup => (
-                <Meetup key={meetup.id}>
-                  <ImageMeetup source={{ uri: `http://127.0.0.1:3333/files/${meetup.file_id}` }} />
-                  <InfoBox>
-                    <Info>
-                      <Title>{meetup.title}</Title>
-                      <Number>
-                        {meetup.__meta__.subscriptions_count > 0
-                          ? `${meetup.__meta__.subscriptions_count} membros`
-                          : 'Nenhum membro'}
-                      </Number>
-                    </Info>
-                    <DetailsMeetup
-                      onPress={() => navigation.navigate('Meetup', { meetup })}
-                      activeOpacity={0.65}
-                    >
-                      <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
-                    </DetailsMeetup>
-                  </InfoBox>
-                </Meetup>
-              ))}
-          </MeetupsList>
-        </Box>
+        <Header title="Busca" />
+        <Content>
+          <ScrollView>
+            <Box>
+              <SearchInput>
+                <Icon name="ios-search" size={20} color="grey" />
+                <Input
+                  ref={(input) => {
+                    this.searchInput = input;
+                  }}
+                  keyboardType="default"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  autofocus
+                  onChangeText={term => this.handleInputSearch(term)}
+                  placeholder="Buscar meetups"
+                  placeholderTextColor="grey"
+                  returnKeyType="search"
+                />
+              </SearchInput>
 
-        <Box>
-          <Label>Próximos meetups</Label>
-          {nexts.length === 0 && (
-            <Message>
-              <MessageText>Não existe próximos meetups.</MessageText>
-            </Message>
-          )}
-          <MeetupsList>
-            {nexts
-              && nexts.map(meetup => (
-                <Meetup key={meetup.id}>
-                  <ImageMeetup source={{ uri: `http://127.0.0.1:3333/files/${meetup.file_id}` }} />
-                  <InfoBox>
-                    <Info>
-                      <Title>{meetup.title}</Title>
-                      <Number>
-                        {meetup.__meta__.subscriptions_count > 0
-                          ? `${meetup.__meta__.subscriptions_count} membros`
-                          : 'Nenhum membro'}
-                      </Number>
-                    </Info>
-                    <DetailsMeetup
-                      onPress={() => navigation.navigate('Meetup', { meetup })}
-                      activeOpacity={0.65}
-                    >
-                      <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
-                    </DetailsMeetup>
-                  </InfoBox>
-                </Meetup>
-              ))}
-          </MeetupsList>
-        </Box>
+              <Label>Inscrições</Label>
+              {subscriptions.length === 0 && (
+                <Message>
+                  <MessageText>Nenhuma inscrição realizada.</MessageText>
+                </Message>
+              )}
+              <MeetupsList
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={subscriptions}
+                keyExtractor={item => String(item.id)}
+                renderItem={({ item }) => (
+                  <Meetup>
+                    <ImageMeetup source={{ uri: `http://10.0.3.2:3333/files/${item.file_id}` }} />
+                    <InfoBox>
+                      <Info>
+                        <Title>{item.title}</Title>
+                        <Number>
+                          {item.__meta__.subscriptions_count > 0
+                            ? `${item.__meta__.subscriptions_count} membros`
+                            : 'Nenhum membro'}
+                        </Number>
+                      </Info>
+                      <DetailsMeetup
+                        onPress={() => navigate('Meetup', { item })}
+                        activeOpacity={0.65}
+                      >
+                        <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
+                      </DetailsMeetup>
+                    </InfoBox>
+                  </Meetup>
+                )}
+              />
+            </Box>
 
-        <Box>
-          <Label>Recomendados</Label>
-          {recommended.length === 0 && (
-            <Message>
-              <MessageText>Escolha suas preferências de meetups.</MessageText>
-            </Message>
-          )}
-          <MeetupsList>
-            {recommended
-              && recommended.map(meetup => (
-                <Meetup key={meetup.id}>
-                  <ImageMeetup source={{ uri: `http://127.0.0.1:3333/files/${meetup.file_id}` }} />
-                  <InfoBox>
-                    <Info>
-                      <Title>{meetup.title}</Title>
-                      <Number>
-                        {meetup.__meta__.subscriptions_count > 0
-                          ? `${meetup.__meta__.subscriptions_count} membros`
-                          : 'Nenhum membro'}
-                      </Number>
-                    </Info>
-                    <DetailsMeetup
-                      onPress={() => navigation.navigate('Meetup', { meetup })}
-                      activeOpacity={0.65}
-                    >
-                      <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
-                    </DetailsMeetup>
-                  </InfoBox>
-                </Meetup>
-              ))}
-          </MeetupsList>
-        </Box>
+            <Box>
+              <Label>Próximos meetups</Label>
+              {nexts.length === 0 && (
+                <Message>
+                  <MessageText>Não existe próximos meetups.</MessageText>
+                </Message>
+              )}
+              <MeetupsList
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={nexts}
+                keyExtractor={item => String(item.id)}
+                renderItem={({ item }) => (
+                  <Meetup>
+                    <ImageMeetup source={{ uri: `http://10.0.3.2:3333/files/${item.file_id}` }} />
+                    <InfoBox>
+                      <Info>
+                        <Title>{item.title}</Title>
+                        <Number>
+                          {item.__meta__.subscriptions_count > 0
+                            ? `${item.__meta__.subscriptions_count} membros`
+                            : 'Nenhum membro'}
+                        </Number>
+                      </Info>
+                      <DetailsMeetup
+                        onPress={() => navigate('Meetup', { item })}
+                        activeOpacity={0.65}
+                      >
+                        <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
+                      </DetailsMeetup>
+                    </InfoBox>
+                  </Meetup>
+                )}
+              />
+            </Box>
+
+            <Box>
+              <Label>Recomendados</Label>
+              {recommended.length === 0 && (
+                <Message>
+                  <MessageText>Escolha suas preferências de meetups.</MessageText>
+                </Message>
+              )}
+              <MeetupsList
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={recommended}
+                keyExtractor={item => String(item.id)}
+                renderItem={({ item }) => (
+                  <Meetup>
+                    <ImageMeetup source={{ uri: `http://10.0.3.2:3333/files/${item.file_id}` }} />
+                    <InfoBox>
+                      <Info>
+                        <Title>{item.title}</Title>
+                        <Number>
+                          {item.__meta__.subscriptions_count > 0
+                            ? `${item.__meta__.subscriptions_count} membros`
+                            : 'Nenhum membro'}
+                        </Number>
+                      </Info>
+                      <DetailsMeetup
+                        onPress={() => navigate('Meetup', { item })}
+                        activeOpacity={0.65}
+                      >
+                        <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
+                      </DetailsMeetup>
+                    </InfoBox>
+                  </Meetup>
+                )}
+              />
+            </Box>
+          </ScrollView>
+        </Content>
       </Container>
     );
   }
@@ -202,7 +230,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(MeetupsActions, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+  withNavigationFocus,
 )(Search);

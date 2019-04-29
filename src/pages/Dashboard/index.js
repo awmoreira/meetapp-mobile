@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withNavigationFocus } from 'react-navigation';
+import OrientationLoadingOverlay from 'react-native-orientation-loading-overlay';
 
 import { ScrollView } from 'react-native';
 
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MeetupsActions from '../../store/ducks/meetups';
 
@@ -59,6 +61,7 @@ class Dashboard extends Component {
         }),
       }),
     ).isRequired,
+    isLoading: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
@@ -70,8 +73,27 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { subscriptions, nexts, recommended } = this.props;
+    const {
+      subscriptions, nexts, recommended, isLoading,
+    } = this.props;
     const { navigate } = this.props.navigation;
+
+    if (isLoading) {
+      return (
+        <Container>
+          <Header title="Início" />
+          <Content>
+            <OrientationLoadingOverlay
+              visible
+              color="white"
+              indicatorSize="large"
+              messageFontSize={24}
+              message="Loading..."
+            />
+          </Content>
+        </Container>
+      );
+    }
 
     return (
       <Container>
@@ -79,12 +101,7 @@ class Dashboard extends Component {
         <Content>
           <ScrollView>
             <Box>
-              <Label>Inscrições</Label>
-              {subscriptions.length === 0 && (
-                <Message>
-                  <MessageText>Nenhuma inscrição realizada.</MessageText>
-                </Message>
-              )}
+              <Label>{!isLoading ? 'Inscrições' : ''}</Label>
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
                 horizontal
@@ -115,12 +132,8 @@ class Dashboard extends Component {
             </Box>
 
             <Box>
-              <Label>Próximos meetups</Label>
-              {nexts.length === 0 && (
-                <Message>
-                  <MessageText>Não existe próximos meetups.</MessageText>
-                </Message>
-              )}
+              <Label>{!isLoading ? 'Próximos meetups' : ''}</Label>
+
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
                 horizontal
@@ -151,12 +164,8 @@ class Dashboard extends Component {
             </Box>
 
             <Box>
-              <Label>Recomendados</Label>
-              {recommended.length === 0 && (
-                <Message>
-                  <MessageText>Escolha suas preferências de meetups.</MessageText>
-                </Message>
-              )}
+              <Label>{!isLoading ? 'Recomendados' : ''}</Label>
+
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
                 horizontal
@@ -200,7 +209,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators(MeetupsActions, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+  withNavigationFocus,
 )(Dashboard);
