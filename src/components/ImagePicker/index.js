@@ -18,7 +18,6 @@ const options = {
 
 class ImagePicker extends Component {
   static propTypes = {
-    name: PropTypes.string.isRequired,
     setFieldValue: PropTypes.func.isRequired,
   };
 
@@ -28,7 +27,7 @@ class ImagePicker extends Component {
   };
 
   handleImageChange = () => {
-    const { setFieldValue, name } = this.props;
+    const { setFieldValue } = this.props;
 
     RNImagePicker.launchImageLibrary(options, async (response) => {
       if (response.didCancel) {
@@ -48,7 +47,7 @@ class ImagePicker extends Component {
           imagePreviewUri: { uri: response.uri },
           file: true,
         });
-        setFieldValue(name, {
+        setFieldValue({
           name: response.fileName,
           type,
           size: response.fileSize,

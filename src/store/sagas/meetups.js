@@ -30,9 +30,16 @@ export function* getRecommended({ term }) {
 // }
 
 export function* addMeetup({
-  title, description, preference, locale, date_event, file_id,
+  title, description, preference, locale, date_event, image,
 }) {
   try {
+    // eslint-disable-next-line no-undef
+    const formData = new FormData();
+    formData.append('file', image);
+    const { data: file } = yield call(api.post, '/files', formData);
+
+    const file_id = file.id;
+
     const response = yield call(api.post, 'meetups', {
       title,
       description,

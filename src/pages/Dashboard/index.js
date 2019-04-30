@@ -61,7 +61,11 @@ class Dashboard extends Component {
         }),
       }),
     ).isRequired,
-    isLoading: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isLoading: false,
   };
 
   componentDidMount() {
@@ -114,13 +118,13 @@ class Dashboard extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
@@ -146,13 +150,13 @@ class Dashboard extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
@@ -178,13 +182,13 @@ class Dashboard extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />

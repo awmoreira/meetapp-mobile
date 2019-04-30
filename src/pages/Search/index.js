@@ -84,6 +84,7 @@ class Search extends Component {
 
   render() {
     const { subscriptions, nexts, recommended } = this.props;
+    const { navigate } = this.props.navigation;
 
     return (
       <Container>
@@ -112,12 +113,12 @@ class Search extends Component {
               <Label>Inscrições</Label>
               {subscriptions.length === 0 && (
                 <Message>
-                  <MessageText>Nenhuma inscrição realizada.</MessageText>
+                  <MessageText>Nenhum meetup encontrado.</MessageText>
                 </Message>
               )}
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
-                horizontal
+                // horizontal
                 data={subscriptions}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item }) => (
@@ -127,13 +128,13 @@ class Search extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
@@ -148,12 +149,12 @@ class Search extends Component {
               <Label>Próximos meetups</Label>
               {nexts.length === 0 && (
                 <Message>
-                  <MessageText>Não existe próximos meetups.</MessageText>
+                  <MessageText>Nenhum meetup encontrado.</MessageText>
                 </Message>
               )}
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
-                horizontal
+                // horizontal
                 data={nexts}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item }) => (
@@ -163,13 +164,13 @@ class Search extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />
@@ -184,12 +185,12 @@ class Search extends Component {
               <Label>Recomendados</Label>
               {recommended.length === 0 && (
                 <Message>
-                  <MessageText>Escolha suas preferências de meetups.</MessageText>
+                  <MessageText>Nenhum meetup encontrado.</MessageText>
                 </Message>
               )}
               <MeetupsList
                 showsHorizontalScrollIndicator={false}
-                horizontal
+                // horizontal
                 data={recommended}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item }) => (
@@ -199,13 +200,13 @@ class Search extends Component {
                       <Info>
                         <Title>{item.title}</Title>
                         <Number>
-                          {item.__meta__.subscriptions_count > 0
+                          {item.__meta__.subscriptions_count >= 0
                             ? `${item.__meta__.subscriptions_count} membros`
                             : 'Nenhum membro'}
                         </Number>
                       </Info>
                       <DetailsMeetup
-                        onPress={() => navigate('Meetup', { item })}
+                        onPress={() => navigate('Meetup', { id: item.id })}
                         activeOpacity={0.65}
                       >
                         <Icon name="ios-arrow-round-forward" size={16} color="#fff" />

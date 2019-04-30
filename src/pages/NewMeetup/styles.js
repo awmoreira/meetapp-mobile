@@ -8,8 +8,8 @@ export const Container = styled.SafeAreaView`
 export const Content = styled.View`
   flex: 1;
   flex-direction: column;
-  align-items: center;
-  padding-top: 20px;
+  align-items: stretch;
+  padding: 20px;
 `;
 
 export const Box = styled.View`
@@ -39,7 +39,7 @@ export const TitleName = styled.Text`
   color: #fff;
   font-size: 16px;
   font-weight: bold;
-  margin-top: 5px;
+  margin-top: 10px;
 `;
 
 export const Input = styled.TextInput`

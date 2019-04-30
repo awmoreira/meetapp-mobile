@@ -13,8 +13,6 @@ export const Content = styled.View`
 `;
 
 export const Box = styled.View`
-  flex-direction: column;
-  align-items: stretch;
   margin-bottom: 20px;
   width: 100%;
   padding-left: 20px;
@@ -39,10 +37,12 @@ export const Meetup = styled.View`
   border: 0;
   border-radius: 5px;
   box-shadow: 0 0 10px #ccc;
+  height: 222px;
+  width: 290px;
 `;
 export const ImageMeetup = styled.Image`
   height: 146px;
-  width: 290px;
+  width: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 `;

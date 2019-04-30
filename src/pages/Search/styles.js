@@ -35,11 +35,9 @@ export const Input = styled.TextInput`
 `;
 
 export const Box = styled.View`
-  flex-direction: column;
-  align-items: stretch;
   margin-bottom: 20px;
-  width: 100%;
   padding-left: 20px;
+  padding-right: 20px;
 `;
 
 export const Label = styled.Text`
@@ -50,9 +48,7 @@ export const Label = styled.Text`
   padding: 10px 0;
 `;
 
-export const MeetupsList = styled.FlatList`
-  /* flex-direction: row; */
-`;
+export const MeetupsList = styled.FlatList``;
 
 export const Meetup = styled.View`
   background: #fff;
@@ -60,10 +56,12 @@ export const Meetup = styled.View`
   margin-bottom: 20px;
   border: 0;
   border-radius: 5px;
+  height: 222px;
+  width: ${Dimensions.get('window').width - 50}px;
 `;
 export const ImageMeetup = styled.Image`
   height: 146px;
-  width: 290px;
+  width: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 `;
@@ -111,6 +109,7 @@ export const Message = styled.View`
   background-color: #d9edf7;
   border-radius: 5px;
   border-color: #bce8f1;
+  width: ${Dimensions.get('window').width - 50}px;
 `;
 
 export const MessageText = styled.Text`

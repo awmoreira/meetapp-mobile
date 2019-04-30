@@ -10,7 +10,21 @@ import { bindActionCreators } from 'redux';
 import ActionsMeetupDetails from '../../store/ducks/meetupDetails';
 import ActionsSubscriptions from '../../store/ducks/subscriptions';
 
-import { Container, Info } from './styles';
+import {
+  Container,
+  Content,
+  ImageMeetup,
+  Info,
+  Title,
+  Subs,
+  Description,
+  LocaleLabel,
+  Locale,
+  Button,
+  TextButton,
+} from './styles';
+
+import Header from '~/components/Header';
 
 class Meetup extends Component {
   static propTypes = {
@@ -24,9 +38,11 @@ class Meetup extends Component {
       subscriptions: PropTypes.arrayOf(PropTypes.shape()),
       locale: PropTypes.string,
     }).isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
+    navigation: PropTypes.shape({
+      state: PropTypes.shape({
+        params: PropTypes.shape({
+          id: PropTypes.number,
+        }),
       }),
     }).isRequired,
   };
@@ -36,19 +52,16 @@ class Meetup extends Component {
   }
 
   loadMeetup = () => {
-    const { match } = this.props;
-    const { id } = match.params;
+    const { id } = this.props.navigation.state.params;
     const { getMeetupRequest } = this.props;
 
     getMeetupRequest(id);
   };
 
   handleSubmitSubscription = () => {
-    const { match } = this.props;
-    const { id: meetup_id } = match.params;
+    const { id } = this.props.meetup;
     const { addSubscriptionRequest } = this.props;
-
-    addSubscriptionRequest(meetup_id);
+    addSubscriptionRequest(id);
   };
 
   render() {
@@ -56,22 +69,25 @@ class Meetup extends Component {
 
     return (
       <Container>
-        <Image source={{ uri: `http://127.0.0.1:3333/files/${meetup.file_id}` }} />
-        <Info>
-          <Text>{meetup.title}</Text>
-          <Text>
-            {meetup.subscriptions ? `${meetup.subscriptions.length} membros` : 'Nenhum membro'}
-          </Text>
+        <Header title={`Meetup ${meetup.title}`} isStacked />
+        <Content>
+          <ImageMeetup source={{ uri: `http://10.0.3.2:3333/files/${meetup.file_id}` }} />
+          <Info>
+            <Title>{meetup.title}</Title>
+            <Subs>
+              {meetup.subscriptions ? `${meetup.subscriptions.length} membros` : 'Nenhum membro'}
+            </Subs>
 
-          <Text>{meetup.description}</Text>
+            <Description>{meetup.description}</Description>
 
-          <Text>Realizado em:</Text>
-          <Text>{meetup.locale}</Text>
+            <LocaleLabel>Realizado em:</LocaleLabel>
+            <Locale>{meetup.locale}</Locale>
 
-          {/* <Button size="big" type="button" onClick={this.handleSubmitSubscription}>
-            Inscreva-se
-          </Button> */}
-        </Info>
+            <Button onPress={this.handleSubmitSubscription}>
+              <TextButton>Inscreva-se</TextButton>
+            </Button>
+          </Info>
+        </Content>
       </Container>
     );
   }

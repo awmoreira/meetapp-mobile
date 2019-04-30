@@ -8,7 +8,9 @@ export const Container = styled.TouchableOpacity`
   height: 100px;
   background-color: ${colors.darkTransparent(0.1)};
   border-color: ${colors.whiteTransparent(0.1)};
-  border-width: 1;
+  border-width: 2;
+  border-radius: 3;
+  border-style: dashed;
   margin-top: 10px;
 `;
 

@@ -10,7 +10,7 @@ const { Types, Creators } = createActions({
   getNextsSuccess: ['data'],
   getRecommendedRequest: ['term'],
   getRecommendedSuccess: ['data'],
-  addMeetupRequest: ['title', 'description', 'preference', 'locale', 'date_event', 'file_id'],
+  addMeetupRequest: ['title', 'description', 'preference', 'locale', 'date_event', 'image'],
   addMeetupSuccess: ['meetup'],
 });
 

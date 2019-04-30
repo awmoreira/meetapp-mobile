@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImagePicker from '~/components/ImagePicker';
+// import { TextInputMask } from 'react-native-masked-text'
 
 import {
   ScrollView,
@@ -35,11 +36,9 @@ class NewMeetup extends Component {
   };
 
   state = {
-    uploadedFiles: [],
-
+    image: null,
     title: '',
     description: '',
-    file_id: '',
     locale: '',
     date_event: '',
 
@@ -61,7 +60,7 @@ class NewMeetup extends Component {
       description,
       locale,
       date_event,
-      file_id,
+      image,
 
       front,
       back,
@@ -80,12 +79,17 @@ class NewMeetup extends Component {
       marketing,
     };
 
-    addMeetupRequest(title, description, preference, locale, date_event, file_id);
+    addMeetupRequest(title, description, preference, locale, date_event, image);
+  };
+
+  setFieldValue = (image) => {
+    this.setState({
+      image,
+    });
   };
 
   render() {
     const {
-      uploadedFiles,
       title,
       description,
       locale,
@@ -102,9 +106,9 @@ class NewMeetup extends Component {
     return (
       <Container>
         <Header title="Novo meetup" />
-        <Content>
-          <ScrollView>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
+        <ScrollView>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null}>
+            <Content>
               <TitleName>Título</TitleName>
               <Input
                 autoCorrect={false}
@@ -136,7 +140,7 @@ class NewMeetup extends Component {
               />
 
               <TitleName>Imagem</TitleName>
-              <ImagePicker name="file" setFieldValue={uploadedFiles} />
+              <ImagePicker setFieldValue={this.setFieldValue} />
 
               <TitleName>Localização</TitleName>
               <Input
@@ -268,9 +272,9 @@ class NewMeetup extends Component {
               <Button activeOpacity={0.65} onPress={this.handleSubmit}>
                 <TextButton>Salvar</TextButton>
               </Button>
-            </KeyboardAvoidingView>
-          </ScrollView>
-        </Content>
+            </Content>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Container>
     );
   }
